@@ -1,0 +1,46 @@
+<html lang="en" style="margin: 0px; padding: 0px;"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,width=device-width user-scalable=no">
+    <link rel="stylesheet" media="all" href="index.css">
+    <title>CaptureToDMX</title>
+    <description></description>
+  </head>
+  <body>
+    <div class="full">
+        <div class="blk"><button id="startBtn">Start capture</button><br><button id="endBtn">End capture</button>
+        </div>
+        <div class="blk">
+            <div><label>Blur<input id="blur" type="range" min="0" max="50" value="0"/></label></div>
+            <div><label>Hue<input id="hue" type="range" min="0" max="360" value="0"/></label></div>
+            <div><label>Saturation<input id="saturation" type="range" min="0" max="200" value="100"/></label></div>
+            <div><label>Brightness<input id="brightness" type="range" min="0" max="200" step="0.1" value="100"/></label></div>
+            <div><label>Contrast<input id="contrast" type="range" min="0" max="200" value="100"/></label></div>
+        </div>
+        <div class="blk">
+            <span>fps</span>
+            <div id="fps">0</div>
+        </div>
+        <div class="blk">
+            <img id="logo" src="beatlinelogo.png">
+        </div>
+    </div>
+    <div class="full">
+        <div class="blk">
+            <span>DMX data</span>
+            <div id="dmx"></div>
+        </div>
+    </div>
+    <div class="full">
+        <div class="blk">
+            <div id="container">
+                <video id="video" autoplay></video>
+                <div id="crop"></div>
+                <canvas></canvas>
+                <div id="line"></div>
+            </div>
+            
+        </div>
+    </div>
+    <script src="index.js"></script>
+  </body>
+  </html>
