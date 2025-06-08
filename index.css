@@ -1,0 +1,100 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #6a6d70;
+}
+
+#logo {
+    width: 165px;
+    margin-left: 157px;
+}
+
+#container{
+  position: relative;
+}
+
+.full {
+    display:flex;
+}
+
+.blk {
+    display: flex;
+    margin: 6px;
+    flex-direction: column;
+}
+
+.blk>button {
+    width: 100px;
+}
+
+.blk>div>label {
+    display: inline-block;
+    width: 100%;
+}
+
+.blk>div>label>input {
+    float: right;
+}
+
+#fps {
+    font-size: 50;
+}
+
+video {
+  display:none;
+  position: relative;
+  background-color: transparent;
+}
+
+canvas {
+  border: 1px solid gray;
+  position: relative;
+  width:700px;
+  height: 400px;
+}
+
+#line {
+    position: absolute;
+    top: 50%;
+    width: 700px;
+    height: 3px;
+    background-color: yellow;
+}
+
+#dmx {
+    display: flex;
+    height: 77px;
+    width: 700px;
+    justify-content: center;
+    flex-direction: row;
+}
+
+#dmx>div {
+  display:flex;
+  flex-direction: column;
+  border: 1px solid black;
+  flex: 1;
+  align-items: center;
+}
+
+#dmx>div>div{
+  flex: 1;
+  height: 20px;
+}  
+
+#dmx div label {
+  position: absolute;
+  font-size: 13px;
+  color:gray;
+  margin: 3px 0 0 4px;
+  writing-mode: vertical-rl;
+}
+
+#crop {
+  position: absolute;
+  left: 0;
+  top: 23px;
+  right: 0;
+  bottom: 0;
+  background-color: #ff000022;
+}
