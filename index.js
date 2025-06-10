@@ -30,6 +30,8 @@ connectBtn.addEventListener('click', async () => {
     if (serialport){
         dmxDevice = new EnttecPro(serialport, {channels: 96, auto: true});
         window.dmxDevice = dmxDevice;
+        disconnectBtn.disabled = false;
+        connectBtn.disabled = true;
     }
   } catch (error){
     console.log('connect Device', error);
@@ -38,12 +40,9 @@ connectBtn.addEventListener('click', async () => {
     
 disconnectBtn.addEventListener('click', async () => {
   try{
-    statusLogElm.innerHTML += 'Closing devices....';
-    for (let j = 0; j < DMXDevices.length; j++) {
-      await DMXDevices[j].close();
-    }
-    statusLogElm.innerHTML += 'closed<br>';
-    disconnectBtn.disabled = true;
+      await dmxDevice.close();
+      disconnectBtn.disabled = true;
+      connectBtn.disabled = false;
   } catch (err){
     console.log(err);
   }

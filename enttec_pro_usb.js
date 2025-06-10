@@ -30,6 +30,8 @@ export class EnttecPro {
   }
 
   async close(){
+    this.dmxData.fill(0, 5, -1);
+    await this.send();
     this.writer.releaseLock();
     await this.serialport.close();
   }
