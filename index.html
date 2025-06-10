@@ -6,6 +6,12 @@
     <description>Web application to capture screen graphics and send portions out as DMX data for stage light control.</description>
   </head>
   <body>
+    <div id="container1">
+			<button id="connectBtn">Connect USB DMX Device</button>
+            <button id="disconnectBtn" disabled>Disconnect All</button>
+            <div id="statusLogElm"></div>
+			<div id="colors"></div>
+		</div>
     <div class="full">
         <div class="blk"><button id="startBtn">Start capture</button><br><button id="endBtn">End capture</button>
         </div>
@@ -42,6 +48,8 @@
             
         </div>
     </div>
-    <script src="index.js"></script>
+    <script type="module"> 
+        import * as app from './index.js';
+    </script>
   </body>
   </html>

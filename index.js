@@ -1,3 +1,5 @@
+import {EnttecPro} from './enttec_pro_usb.js';
+
 const startElem = document.getElementById("startBtn");
 const videoElem = document.getElementById("video");
 const canvasElem = document.querySelector("canvas");
@@ -16,6 +18,38 @@ const fpsElem = document.getElementById("fps");
 var startTime;
 var frameCount = 0;
 var vh = 0;
+var dmxDevice = null;
+
+const statusLogElm = document.getElementById('statusLogElm');
+const connectBtn = document.getElementById('connectBtn');
+const disconnectBtn = document.getElementById('disconnectBtn');
+
+connectBtn.addEventListener('click', async () => {
+  try{
+    let serialport = await navigator.serial.requestPort();
+    if (serialport){
+        dmxDevice = new EnttecPro(serialport, {channels: 97, auto: true});
+        window.dmxDevice = dmxDevice;
+    }
+  } catch (error){
+    console.log('connect Device', error);
+  }
+});
+    
+disconnectBtn.addEventListener('click', async () => {
+  try{
+    statusLogElm.innerHTML += 'Closing devices....';
+    for (let j = 0; j < DMXDevices.length; j++) {
+      await DMXDevices[j].close();
+    }
+    statusLogElm.innerHTML += 'closed<br>';
+    disconnectBtn.disabled = true;
+  } catch (err){
+    console.log(err);
+  }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
 
 blurSlider.addEventListener('input', (evt) => { ctx.filter = 'blur('+blurSlider.value+'px)' }, false);
 hueSlider.addEventListener('input', (evt) => { ctx.filter = 'hue-rotate('+hueSlider.value+'deg)' }, false);
@@ -29,14 +63,14 @@ linePosSlider.addEventListener('input', (evt) => {
 
 }, false);
 
-const samples = 24;
+const samples = 32;
 const sampleLeftMargin =20;
 const sampleRightMargin=20;
 
 for (let i=0; i<samples; i++){
   let sample = document.createElement('div');
   let label = document.createElement('div');
-  label.innerText = i*3;
+  label.innerText = (i*3)+1;
   sample.appendChild(label);
   sample.appendChild(document.createElement('div'));
   sample.appendChild(document.createElement('div'));
@@ -57,6 +91,11 @@ const displayMediaOptions = {
 
 startElem.addEventListener('click', (evt) => { startCapture(); }, false);
 stopElem.addEventListener('click', (evt) => { stopCapture(); }, false);
+
+function easeInSine( t ) {
+    //return -1 * Math.cos( t * ( Math.PI / 2 ) ) + 1;
+    return t * t;
+}
 
 async function startCapture() {
   try {
@@ -94,18 +133,23 @@ async function startCapture() {
             let data = ctx.getImageData(0, vh, videoElem.videoWidth-1, 1).data;
             let step = Math.floor((videoElem.videoWidth - sampleLeftMargin - sampleRightMargin) / samples);
             let channel = 1;
+            let sampleIndex = 0;
             for (let i = sampleLeftMargin; i < videoElem.videoWidth; i += step) {
-            let r = data[(i * 4)];
-            let g = data[(i * 4) + 1];
-            let b = data[(i * 4) + 2];
-            let sample = dmxElem.children[channel - 1]; 
-            sample.children[1].innerText = r;
-            sample.children[2].innerText = g;
-            sample.children[3].innerText = b;
-            sample.style.backgroundColor = 'rgb('+r+','+g+','+b+')';
-            channel++;
-            if (channel>samples){ break; }
-          }
+                let r = Math.floor(data[(i * 4)] * easeInSine(data[(i * 4)]/255));
+                let g = Math.floor(data[(i * 4) + 1] * easeInSine(data[(i * 4) + 1]/255));
+                let b = Math.floor(data[(i * 4) + 2] * easeInSine(data[(i * 4) + 2]/255));
+                if (dmxDevice) dmxDevice.setDMX(channel, [r,g,b]);
+                
+                let sample = dmxElem.children[sampleIndex]; 
+                //sample.children[1].innerText = r;
+                //sample.children[2].innerText = g;
+                //sample.children[3].innerText = b;
+                sample.style.backgroundColor = 'rgb('+r+','+g+','+b+')';
+                
+                channel+=3;
+                sampleIndex++;
+                if (sampleIndex>=samples){ break; }
+            }
         } else {
             ctx = canvasElem.getContext('2d', {
               willReadFrequently: true,
@@ -127,3 +171,5 @@ function stopCapture(evt) {
   tracks.forEach((track) => track.stop());
   videoElem.srcObject = null;
 }
+
+  });	
