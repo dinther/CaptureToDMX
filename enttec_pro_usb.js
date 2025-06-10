@@ -13,8 +13,8 @@ export class EnttecPro {
     this.dmxData = new Uint8Array(this.#options.channels + DATA_OFFSET + 1).fill(0);
     this.dmxData[0] = 0x7E;
     this.dmxData[1] = 6;
-    this.dmxData[2] = this.#options.channels & 0xff;
-    this.dmxData[3] = this.#options.channels >>8 & 0xff
+    this.dmxData[2] = (this.#options.channels + 1) & 0xff;
+    this.dmxData[3] = (this.#options.channels + 1) >>8 & 0xff
     this.dmxData[this.#options.channels + DATA_OFFSET ] = 0xE7;
     //if (this.serialport.connected){
     //    await this.serialport.close();
