@@ -20,12 +20,13 @@ export class EnttecPro {
     //    await this.serialport.close();
     //}   
     await this.serialport.open({baudRate: this.#options.baudRate})
-    //this.writer = this.serialport.writable.getWriter();
+    this.writer = this.serialport.writable.getWriter();
     //this.reader = this.serialport.readable.getReader();
     await this.send();
   }
 
   async close(){
+    this.writer.releaseLock();
     await this.serialport.close();
   }
 
@@ -56,9 +57,8 @@ export class EnttecPro {
   }
 
   async send(){
-    this.writer = this.serialport.writable.getWriter();
+    //this.writer = this.serialport.writable.getWriter();
     await this.writer.write(this.dmxData);
-    this.writer.releaseLock();
   }
 
   get options(){
