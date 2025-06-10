@@ -92,9 +92,8 @@ const displayMediaOptions = {
 startElem.addEventListener('click', (evt) => { startCapture(); }, false);
 stopElem.addEventListener('click', (evt) => { stopCapture(); }, false);
 
-function easeInSine( t ) {
-    //return -1 * Math.cos( t * ( Math.PI / 2 ) ) + 1;
-    return t * t;
+function quadraticEasing( value ) {
+  return Math.floor(value * Math.pow(value/255, 2));
 }
 
 async function startCapture() {
@@ -135,9 +134,9 @@ async function startCapture() {
             let channel = 1;
             let sampleIndex = 0;
             for (let i = sampleLeftMargin; i < videoElem.videoWidth; i += step) {
-                let r = Math.floor(data[(i * 4)] * easeInSine(data[(i * 4)]/255));
-                let g = Math.floor(data[(i * 4) + 1] * easeInSine(data[(i * 4) + 1]/255));
-                let b = Math.floor(data[(i * 4) + 2] * easeInSine(data[(i * 4) + 2]/255));
+                let r = quadraticEasing(data[(i * 4)]);
+                let g = quadraticEasing(data[(i * 4) + 1]);
+                let b = quadraticEasing(data[(i * 4) + 2]);
                 if (dmxDevice) dmxDevice.setDMX(channel, [r,g,b]);
                 
                 let sample = dmxElem.children[sampleIndex]; 
