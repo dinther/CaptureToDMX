@@ -1,5 +1,12 @@
+//  specs: https://cdn.enttec.com/pdf/assets/70304/70304_DMX_USB_PRO_API.pdf
 
-const DATA_OFFSET = 4;
+const ENTTEC_MESSAGE_START = 0x7E;
+const ENTTEC_MESSAGE_END = 0xE7;
+const DATA_OFFSET = 5;
+const ENTTEC_GET_WIDGET_PARAMS = 3;
+const ENTTEC_SET_WIDGET_PARAMS = 4;
+const ENTTEC_RX_DMX_PACKET = 5;
+const ENTTEC_TX_DMX_PACKET = 6;
 
 export class EnttecPro {
   #options = {auto: false, channels: 512, baudRate: 250000};
@@ -11,17 +18,14 @@ export class EnttecPro {
 
   async init(){
     this.dmxData = new Uint8Array(this.#options.channels + DATA_OFFSET + 1).fill(0);
-    this.dmxData[0] = 0x7E;
-    this.dmxData[1] = 6;
+    this.dmxData[0] = ENTTEC_MESSAGE_START;
+    this.dmxData[1] = ENTTEC_TX_DMX_PACKET;
     this.dmxData[2] = (this.#options.channels + 1) & 0xff;
     this.dmxData[3] = (this.#options.channels + 1) >>8 & 0xff
-    this.dmxData[this.#options.channels + DATA_OFFSET ] = 0xE7;
-    //if (this.serialport.connected){
-    //    await this.serialport.close();
-    //}   
+    this.dmxData[4] = 0;
+    this.dmxData[this.#options.channels + DATA_OFFSET] = ENTTEC_MESSAGE_END;
     await this.serialport.open({baudRate: this.#options.baudRate})
     this.writer = this.serialport.writable.getWriter();
-    //this.reader = this.serialport.readable.getReader();
     await this.send();
   }
 
@@ -32,17 +36,18 @@ export class EnttecPro {
 
   async setDMX(channel, value){
     let changed = false;
+    let index = DATA_OFFSET + channel - 1;
     if (Array.isArray(value)){
       for(let i=0; i<value.length; i++){
-        if (this.dmxData[channel + DATA_OFFSET + i] != value[i]){
+        if (this.dmxData[index+ i] != value[i]){
           changed = true;
-          this.dmxData[channel + DATA_OFFSET + i] = value[i];
+          this.dmxData[index + i] = value[i];
         }
       };
     } else {
-      if (value != this.dmxData[channel + DATA_OFFSET]){
+      if (value != this.dmxData[index]){
         changed = true;
-        this.dmxData[channel + DATA_OFFSET] = value;
+        this.dmxData[index] = value;
       }
     }
     if ( changed ) {
@@ -53,11 +58,10 @@ export class EnttecPro {
   }
 
   getDMX(channel){
-    return this.dmxData[channel + DATA_OFFSET];
+    return this.dmxData[DATA_OFFSET + channel - 1];
   }
 
   async send(){
-    //this.writer = this.serialport.writable.getWriter();
     await this.writer.write(this.dmxData);
   }
 
