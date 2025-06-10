@@ -28,7 +28,7 @@ connectBtn.addEventListener('click', async () => {
   try{
     let serialport = await navigator.serial.requestPort();
     if (serialport){
-        dmxDevice = new EnttecPro(serialport, {channels: 97, auto: true});
+        dmxDevice = new EnttecPro(serialport, {channels: 96, auto: true});
         window.dmxDevice = dmxDevice;
     }
   } catch (error){
