@@ -1,7 +1,9 @@
 # ScreenToDMX
 Web app to capture graphics and send portions out as DMX data for light control.
 
-![{03808776-58C8-41E3-9286-8804E29934D7}](https://github.com/user-attachments/assets/66bb2ac9-dad6-49f3-a35d-d91e8b56095b)
+![{52E8515D-5062-4F01-A56D-693CAA8E64B5}](https://github.com/user-attachments/assets/721ac881-63f5-4e81-abe3-fea005b8baf5)
+
+
 In the image a youtube audio visualisation is captured and sampled for DMX data output.
 
 In the above image ScreenToDMX is used to capture the output screen of [Milkdrop](https://github.com/milkdrop2077/MilkDrop3). 4 lines each with 8 sampling points equaly spaced along the sampling line are sampled and their R,G B values are mapped to 72 DMX channels.
