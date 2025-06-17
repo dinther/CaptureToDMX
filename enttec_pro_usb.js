@@ -10,6 +10,7 @@ const ENTTEC_TX_DMX_PACKET = 6;
 
 export class EnttecPro {
   #options = {auto: false, channels: 512, baudRate: 250000};
+  dmxData;
   constructor(serialPort, options) {
     this.serialport = serialPort;
     Object.assign(this.#options, options);
@@ -24,9 +25,11 @@ export class EnttecPro {
     this.dmxData[3] = (this.#options.channels + 1) >>8 & 0xff
     this.dmxData[4] = 0;
     this.dmxData[this.#options.channels + DATA_OFFSET] = ENTTEC_MESSAGE_END;
-    await this.serialport.open({baudRate: this.#options.baudRate})
-    this.writer = this.serialport.writable.getWriter();
-    await this.send();
+    if (this.serialport != null){
+      await this.serialport.open({baudRate: this.#options.baudRate})
+      this.writer = this.serialport.writable.getWriter();
+      await this.send();
+    }
   }
 
   async close(){
@@ -64,7 +67,9 @@ export class EnttecPro {
   }
 
   async send(){
-    await this.writer.write(this.dmxData);
+    if (this.writer){
+      await this.writer.write(this.dmxData);
+    }
   }
 
   get options(){

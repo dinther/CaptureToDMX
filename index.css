@@ -1,8 +1,9 @@
 body {
-    margin: 0;
+    margin: 15px;
     font-family: sans-serif;
     color: rgb(175, 175, 175);
     background-color: #1a1a1a;
+    box-sizing: content-box;
 }
 
 #logo {
@@ -12,6 +13,7 @@ body {
 
 #container{
   position: relative;
+  background-color: rgb(49, 49, 49);
 }
 
 .full {
@@ -48,21 +50,41 @@ video {
 }
 
 canvas {
-  border: 1px solid gray;
+  bborder: 1px solid gray;
   position: relative;
   width:700px;
   height: 400px;
 }
 
-#line {
-    position: absolute;
-    top: 50%;
-    width: 700px;
-    height: 3px;
-    background-color: yellow;
+.sampleline {
+  display: flex;
+  position: absolute;
+  height: 1px;
+  justify-content: space-between;
+  background-color: yellow;
+  transform-origin: 0px 0px;
+}
+
+.mark:first-child{
+  background-color:rgba(255, 170, 0, 0.5);
+  cursor:move;
+}
+
+.mark:last-child{
+  background-color:rgba(255, 170, 0, 0.5);
+  cursor:move;
+}
+
+.mark {
+  border: 1px solid orange;
+  height: 10px;
+  width: 10px;
+  border-radius: 6px;
+  transform: translate(0px, -5px);
 }
 
 #linepos {
+  display: none;
   writing-mode: vertical-lr;
   height: 400px;
 }
