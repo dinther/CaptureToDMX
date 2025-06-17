@@ -112,10 +112,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });	
 
 
-function quadraticEasing( value ) {
-  return Math.floor(value * Math.pow(value/255, 2));
-}
-
 async function startCapture() {
   try {
     const displayMediaOptions = {
@@ -178,9 +174,9 @@ async function startCapture() {
             for (let i = 0; i < samples; i ++) {
                 let sample = dmxElem.children[i]; 
                 let channel = 1 + (i * 3);
-                //sample.children[1].innerText = dmxDevice.dmxData[channel];
-                //sample.children[2].innerText = dmxDevice.dmxData[channel+1];
-                //sample.children[3].innerText = dmxDevice.dmxData[channel+2];
+                //sample.children[1].innerText = dmxDevice.getDMX(channel);
+                //sample.children[2].innerText = dmxDevice.getDMX(channel+1);
+                //sample.children[3].innerText = dmxDevice.getDMX(channel+2);
                 sample.style.backgroundColor = 'rgb('+dmxDevice.getDMX(channel)+','+dmxDevice.getDMX(channel+1)+','+dmxDevice.getDMX(channel+2)+')';
             }
         } else {
