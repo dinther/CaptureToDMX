@@ -130,7 +130,7 @@ export class SamplerLine{
         let px2 = this.#x2 * 0.01 * this.#canvas.offsetWidth;
         let py2 = this.#y2 * 0.01 * this.#canvas.offsetHeight;
 
-        let pdx = Math.abs(px2 - px1);
+        let pdx = px2 - px1;
         let pdy = py2 - py1;
         let angle = Math.atan2(pdy, pdx);
         let xo = Math.cos(angle) * this.#options.hs;
