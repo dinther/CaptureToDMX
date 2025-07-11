@@ -163,5 +163,9 @@ export class SamplerLine{
         })
         //writeSample
     }
+
+    get options(){
+        return this.#options;
+    }
 }
 

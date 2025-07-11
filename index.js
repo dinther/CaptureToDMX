@@ -16,6 +16,9 @@ const hueSlider = document.getElementById("hue");
 const saturationSlider = document.getElementById("saturation");
 const brightnessSlider = document.getElementById("brightness");
 const contrastSlider = document.getElementById("contrast");
+const visualsCheckbox = document.getElementById("visuals");
+const biasDownCheckbox = document.getElementById("biasdown");
+const dmxBar = document.getElementById("dmxbar");
 const linePosSlider = document.getElementById("linepos");
 const fpsElem = document.getElementById("fps");
 
@@ -85,6 +88,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   brightnessSlider.parentElement.addEventListener('dblclick', ()=>{ brightnessSlider.value = 100; brightnessFilter=''; setFilters();});
   contrastSlider.addEventListener('input', (evt) => { contrastFilter = contrastSlider.value==100? '' : ' contrast('+contrastSlider.value+'%)'; setFilters(); }, false);
   contrastSlider.parentElement.addEventListener('dblclick', ()=>{ contrastSlider.value = 100; contrastFilter=''; setFilters();});
+  visualsCheckbox.addEventListener('input', (evt) => {
+    dmxBar.style.display = visualsCheckbox.checked? '' : 'none';
+    containerElem.style.display = visualsCheckbox.checked? '' : 'none';
+  });
+  biasDownCheckbox.addEventListener('input', (evt) => {
+    samplers.forEach(sampler =>{
+      sampler.options.ledMode = biasDownCheckbox.checked;
+    });
+  });
   linePosSlider.addEventListener('input', (evt) => {
     lineElem.style.top = linePosSlider.value+'%';
     vh = videoElem.videoHeight * linePosSlider.value * 0.01;
@@ -105,10 +117,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     dmxElem.appendChild(sample);
   }
 
-  samplers.push(new SamplerLine(containerElem, canvasElem, {points: 8, size: 16, ledMode:false, startChannel:1}, 1,70, 24, 30));
-  samplers.push(new SamplerLine(containerElem, canvasElem, {points: 8, size: 16, ledMode:false, startChannel:25}, 26,30, 49, 70));
-  samplers.push(new SamplerLine(containerElem, canvasElem, {points: 8, size: 16, ledMode:false, startChannel:49}, 51,70, 74, 30));
-  samplers.push(new SamplerLine(containerElem, canvasElem, {points: 8, size: 16, ledMode:false, startChannel:73}, 76,30, 99, 70));
+  samplers.push(new SamplerLine(containerElem, canvasElem, {points: 16, size: 16, ledMode:true, startChannel:1}, 20, 10, 20, 90));
+  samplers.push(new SamplerLine(containerElem, canvasElem, {points: 16, size: 16, ledMode:true, startChannel:49}, 80,90, 80, 10));
+  //samplers.push(new SamplerLine(containerElem, canvasElem, {points: 8, size: 16, ledMode:false, startChannel:49}, 51,70, 74, 30));
+  //samplers.push(new SamplerLine(containerElem, canvasElem, {points: 8, size: 16, ledMode:false, startChannel:73}, 76,30, 99, 70));
+
+  // eyebrow layout ^^
+  //samplers.push(new SamplerLine(containerElem, canvasElem, {points: 8, size: 16, ledMode:false, startChannel:1}, 1,70, 24, 30));
+  //samplers.push(new SamplerLine(containerElem, canvasElem, {points: 8, size: 16, ledMode:false, startChannel:25}, 26,30, 49, 70));
+  //samplers.push(new SamplerLine(containerElem, canvasElem, {points: 8, size: 16, ledMode:false, startChannel:49}, 51,70, 74, 30));
+  //samplers.push(new SamplerLine(containerElem, canvasElem, {points: 8, size: 16, ledMode:false, startChannel:73}, 76,30, 99, 70));
 });	
 
 
@@ -170,14 +188,16 @@ async function startCapture() {
 
             let step = Math.floor((canvasElem.width - sampleLeftMargin - sampleRightMargin) / samples);
             //let channel = 1;
-            let sampleIndex = 0;
-            for (let i = 0; i < samples; i ++) {
-                let sample = dmxElem.children[i]; 
-                let channel = 1 + (i * 3);
-                //sample.children[1].innerText = dmxDevice.getDMX(channel);
-                //sample.children[2].innerText = dmxDevice.getDMX(channel+1);
-                //sample.children[3].innerText = dmxDevice.getDMX(channel+2);
-                sample.style.backgroundColor = 'rgb('+dmxDevice.getDMX(channel)+','+dmxDevice.getDMX(channel+1)+','+dmxDevice.getDMX(channel+2)+')';
+            if (visualsCheckbox.checked){
+              let sampleIndex = 0;
+              for (let i = 0; i < samples; i ++) {
+                  let sample = dmxElem.children[i]; 
+                  let channel = 1 + (i * 3);
+                  //sample.children[1].innerText = dmxDevice.getDMX(channel);
+                  //sample.children[2].innerText = dmxDevice.getDMX(channel+1);
+                  //sample.children[3].innerText = dmxDevice.getDMX(channel+2);
+                  sample.style.backgroundColor = 'rgb('+dmxDevice.getDMX(channel)+','+dmxDevice.getDMX(channel+1)+','+dmxDevice.getDMX(channel+2)+')';
+              }
             }
         } else {
             ctx = canvasElem.getContext('2d', {
